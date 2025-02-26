@@ -12,16 +12,25 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 
-const ORIGIN = [process.env.ORIGIN || "http://localhost:5173", "https://hernani-silva-dev.netlify.app"]
-
-app.use(
+const allowedOrigins = [
+    process.env.ORIGIN || "http://localhost:5173", // Local dev origin
+    "https://hernani-silva-dev.netlify.app", // Netlify frontend
+  ];
+  
+  app.use(
     cors({
-      origin: `${ORIGIN}`, // Replace with your frontend URL
+      origin: (origin, callback) => {
+        // Allow the specified origins, or if there's no origin (like in Postman), allow it
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS"));
+        }
+      },
       methods: ["GET", "POST", "PUT", "DELETE"],
       allowedHeaders: ["Content-Type", "Authorization"],
     })
   );
-
 
 // ℹ️ This function is getting exported from the config folder. It runs most pieces of middleware
 require("./config")(app);
