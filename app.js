@@ -10,6 +10,18 @@ require("./db");
 const express = require("express");
 
 const app = express();
+const cors = require("cors");
+
+const ORIGIN = [process.env.ORIGIN || "http://localhost:5173", "https://hernani-silva-dev.netlify.app"]
+
+app.use(
+    cors({
+      origin: `${ORIGIN}`, // Replace with your frontend URL
+      methods: ["GET", "POST", "PUT", "DELETE"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+    })
+  );
+
 
 // ℹ️ This function is getting exported from the config folder. It runs most pieces of middleware
 require("./config")(app);
