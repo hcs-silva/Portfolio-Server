@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-router.post("/new-project", async (req, res) => {
+router.post("/add-project", async (req, res) => {
     
 })
 
