@@ -2,6 +2,19 @@ const ProjectModel = require("../models/Projects.model");
 
 const router = require("express").Router();
 
+router.get("/", async (req, res) => {
+  try {
+
+    const foundProjects = await ProjectModel.find();
+
+    res.status(200).json({message: "Here are the Projects", foundProjects})
+    
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Here is your Error", error });
+  }
+});
+
 router.post("/", async (req, res) => {
   const projectToAdd = {
     title: req.body.title,
@@ -25,12 +38,19 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/projects", async (req, res) => {
+router.get("/:projectId", async (req, res) => {
+  const {projectId} = req.params;
+
   try {
+    const foundProject = await ProjectModel.findById(projectId);
+
+    res.status(200).json({message: "Here is the Project", foundProject})
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Here is your Error", error });
   }
-});
+
+  
+})
 
 module.exports = router;
