@@ -5,7 +5,10 @@ const projectSchema = new Schema({
     thumbnail: {type: String},
     description: {type: String, required: true},
     technologies: {type: [String], required: true},
-    collaborators: {type: [String]},
+    collaborators: {type: Array,
+        name: {type: String},
+        linkedin: {type: String}
+    },
     githubLink: {type: String, required: true},
     liveLink: {type: String, required: true},
     date: {type: String}
