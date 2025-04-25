@@ -37,7 +37,7 @@ app.use(
     },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true, // Se estiver usando cookies ou tokens
+    credentials: true, // Se usar cookies ou tokens
   })
 );
 
