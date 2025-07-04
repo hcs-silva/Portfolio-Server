@@ -53,4 +53,28 @@ router.get("/:projectId", async (req, res) => {
   
 })
 
+router.put("/update-project/:projectId", async (req, res) => {
+  const {projectId} = req.params;
+
+  const projectToUpdate = {
+    title: req.body.title,
+    thumbnail: req.body.thumbnail,
+    collaborators: req.body.collaborators,
+    technologies: req.body.technologies,
+    githubLink: req.body.githubLink,
+    liveLink: req.body.liveLink,
+    description: req.body.description,
+    date: req.body.date
+  };
+
+  try {
+    const updatedProject = await ProjectModel.findByIdAndUpdate(projectId, projectToUpdate, {new: true});
+
+    res.status(200).json({message: "Project Updated Sucessfully", updatedProject})
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Here is your Error", error });
+  }
+})
+
 module.exports = router;
