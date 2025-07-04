@@ -53,7 +53,7 @@ router.get("/:projectId", async (req, res) => {
   
 })
 
-router.put("/update-project/:projectId", async (req, res) => {
+router.put("/:projectId", async (req, res) => {
   const {projectId} = req.params;
 
   const projectToUpdate = {
