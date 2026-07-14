@@ -27,9 +27,9 @@ router.post("/", authenticateUser, async (req, res) => {
   };
 
   try {
-    const addedProject = ProjectModel.create(projectToAdd);
+    const addedProject = await ProjectModel.create(projectToAdd);
     res
-      .status(200)
+      .status(201)
       .json({ message: "Project Added Sucessfully", addedProject });
   } catch (error) {
     console.log(error);
