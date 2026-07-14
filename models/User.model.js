@@ -12,7 +12,7 @@ const userSchema = new Schema({
     required: [true, "Password is required."],
   },
   username: {type: String},
-  isAdmin: { type: String, required: false, default: false },
+  isAdmin: { type: String, required: false, default: true },
 });
 
 const UserModel = model("User", userSchema);
