@@ -1,21 +1,20 @@
 const ProjectModel = require("../models/Projects.model");
+const authenticateUser = require("../middlewares/auth.middleware");
 
 const router = require("express").Router();
 
 router.get("/", async (req, res) => {
   try {
-
     const foundProjects = await ProjectModel.find();
 
-    res.status(200).json({message: "Here are the Projects", foundProjects})
-    
+    res.status(200).json({ message: "Here are the Projects", foundProjects });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Here is your Error", error });
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", authenticateUser, async (req, res) => {
   const projectToAdd = {
     title: req.body.title,
     thumbnail: req.body.thumbnail,
@@ -24,13 +23,13 @@ router.post("/", async (req, res) => {
     githubLink: req.body.githubLink,
     liveLink: req.body.liveLink,
     description: req.body.description,
-    date: req.body.date
+    date: req.body.date,
   };
 
   try {
-    const addedProject = ProjectModel.create(projectToAdd);
+    const addedProject = await ProjectModel.create(projectToAdd);
     res
-      .status(200)
+      .status(201)
       .json({ message: "Project Added Sucessfully", addedProject });
   } catch (error) {
     console.log(error);
@@ -39,22 +38,20 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/:projectId", async (req, res) => {
-  const {projectId} = req.params;
+  const { projectId } = req.params;
 
   try {
     const foundProject = await ProjectModel.findById(projectId);
 
-    res.status(200).json({message: "Here is the Project", foundProject})
+    res.status(200).json({ message: "Here is the Project", foundProject });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Here is your Error", error });
   }
+});
 
-  
-})
-
-router.put("/:projectId", async (req, res) => {
-  const {projectId} = req.params;
+router.put("/update-project/:projectId", authenticateUser, async (req, res) => {
+  const { projectId } = req.params;
 
   const projectToUpdate = {
     title: req.body.title,
@@ -64,17 +61,23 @@ router.put("/:projectId", async (req, res) => {
     githubLink: req.body.githubLink,
     liveLink: req.body.liveLink,
     description: req.body.description,
-    date: req.body.date
+    date: req.body.date,
   };
 
   try {
-    const updatedProject = await ProjectModel.findByIdAndUpdate(projectId, projectToUpdate, {new: true});
+    const updatedProject = await ProjectModel.findByIdAndUpdate(
+      projectId,
+      projectToUpdate,
+      { new: true },
+    );
 
-    res.status(200).json({message: "Project Updated Sucessfully", updatedProject})
+    res
+      .status(200)
+      .json({ message: "Project Updated Sucessfully", updatedProject });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Here is your Error", error });
   }
-})
+});
 
 module.exports = router;

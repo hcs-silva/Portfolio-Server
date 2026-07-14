@@ -37,14 +37,23 @@ router.post("/signup", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
+    const configuredOwnerAccessKey = process.env.OWNER_ACCESS_KEY;
+
+    if (
+      configuredOwnerAccessKey &&
+      req.body.ownerAccessKey !== configuredOwnerAccessKey
+    ) {
+      return res.status(403).json({ message: "Restricted access" });
+    }
+
     const foundUser = await UserModel.findOne({ email: req.body.email });
-    console.log(foundUser)
+    console.log(foundUser);
     if (foundUser) {
       const validPassword = bcrypt.compareSync(
         req.body.password,
-        foundUser.password
+        foundUser.password,
       );
-      console.log(validPassword)
+      console.log(validPassword);
       if (validPassword) {
         console.log("Password is valid, generating auth token...");
         const data = {
@@ -59,14 +68,12 @@ router.post("/login", async (req, res) => {
           expiresIn: "10h",
         });
 
-        res
-          .status(200)
-          .json({
-            message: "Login Successful",
-            authToken,
-            userId: foundUser.id,
-            isAdmin: foundUser.isAdmin
-          });
+        res.status(200).json({
+          message: "Login Successful",
+          authToken,
+          userId: foundUser.id,
+          isAdmin: foundUser.isAdmin,
+        });
       } else {
         res.status(401).json({ message: "Invalid Credentials" });
       }
@@ -80,7 +87,9 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/verify", authenticateUser, async (req, res) => {
-  res.status(200).json({ message: "Validation Successful", currentUser: req.payload });
+  res
+    .status(200)
+    .json({ message: "Validation Successful", currentUser: req.payload });
 });
 
 module.exports = router;
